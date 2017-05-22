@@ -1,3 +1,4 @@
+path_proyecto = '/home/fer/kinect/'
 import json   
 import sys
 import math
@@ -7,7 +8,7 @@ from HandPosition import Position
 from HandPosition import Point3D
 from PosicionProcesada import PosicionProcesada
 
-POSITIONS_FILE = '/home/fer/kinect/salidas/jointsTrack_0'
+POSITIONS_FILE = path_proyecto + 'salidas/jointsTrack_2'
 
 
 # FUNCIONES AUXILIARES
@@ -60,16 +61,61 @@ for line in archivo:
 	posiciones.append(position)
 archivo.close()
 
+print 'Total de posiciones en archivo: ' + str(len(posiciones))
+
 
 # FILTRADO
 # --------
 
-# TODO: Determinar inicio y fin del recorrido
-posicion_inicial = posiciones[0]
-posiciones = posiciones[1:]
+# WARNING: Se asume que cada archivo tiene al menos 3 posiciones. 
+
+delta = 1 # distancia minima para considerar que la mano se mueve
+
+# Determino posicion inicial
+ind_posicion_inicial = 0
+pos_1 = posiciones[ind_posicion_inicial].p_palmPos1
+pos_2 = posiciones[ind_posicion_inicial + 1].p_palmPos1
+dif_X = math.fabs(pos_1.x - pos_2.x)
+dif_Y = math.fabs(pos_1.y - pos_2.y)
+dif_Z = math.fabs(pos_1.z - pos_2.z)
+diferencia = max([dif_X, dif_Y, dif_Z])
+
+while (diferencia < delta) and (ind_posicion_inicial + 3 < len(posiciones)):
+	ind_posicion_inicial += 1
+	pos_1 = posiciones[ind_posicion_inicial].p_palmPos1
+	pos_2 = posiciones[ind_posicion_inicial + 1].p_palmPos1
+	dif_X = math.fabs(pos_1.x - pos_2.x)
+	dif_Y = math.fabs(pos_1.y - pos_2.y)
+	dif_Z = math.fabs(pos_1.z - pos_2.z)
+	diferencia = max([dif_X, dif_Y, dif_Z])
+	
+# Determino posicion final
+ind_posicion_final = ind_posicion_inicial + 1
+pos_1 = posiciones[ind_posicion_final].p_palmPos1
+pos_2 = posiciones[ind_posicion_final + 1].p_palmPos1
+dif_X = math.fabs(pos_1.x - pos_2.x)
+dif_Y = math.fabs(pos_1.y - pos_2.y)
+dif_Z = math.fabs(pos_1.z - pos_2.z)
+diferencia = max([dif_X, dif_Y, dif_Z])
+
+while (diferencia > delta) and (ind_posicion_final + 2 < len(posiciones)):
+	ind_posicion_final += 1
+	pos_1 = posiciones[ind_posicion_final].p_palmPos1
+	pos_2 = posiciones[ind_posicion_final + 1].p_palmPos1
+	dif_X = math.fabs(pos_1.x - pos_2.x)
+	dif_Y = math.fabs(pos_1.y - pos_2.y)
+	dif_Z = math.fabs(pos_1.z - pos_2.z)
+	diferencia = max([dif_X, dif_Y, dif_Z])
+ 
+posicion_inicial = posiciones[ind_posicion_inicial]
+posiciones = posiciones[ind_posicion_inicial+1:ind_posicion_final]
+
+#posicion_inicial = posiciones[0]
+#posiciones=posiciones[1:]
 
 # Obtengo cantidad de posiciones y conservo 10 posiciones distribuidas uniformemente
 total_posiciones = len(posiciones)
+print 'Cantidad de posiciones seleccionadas: ' + str(total_posiciones)
 posiciones_seleccionadas = []
 for i in range(10):
 	posiciones_seleccionadas.append(posiciones[total_posiciones*i/10])
@@ -84,7 +130,6 @@ for posicion in posiciones_seleccionadas:
 	dist_ind_pulg =	dist_vectores(posicion.ft_pulgar, posicion.ft_indice)
 	
 	# La coordenada que corrsponde a la altura depende de la posicion del kinect.
-	# TODO: corroborar cual es cada coordenada
 	altura = posicion.p_palmPos1.y / posicion.p_palmPos1.w
 
 	# Velocidad instantanea
@@ -103,7 +148,6 @@ for posicion in posiciones_seleccionadas:
 	
 	procesados.append(PosicionProcesada(dist_ind_pulg=dist_ind_pulg, altura=altura, velocidad=velocidad, roll=roll, pitch=pitch, yaw=yaw))
 	
-print 'Cantidad de posiciones seleccionadas: ' + str(len(procesados))
 print '0-\n-------'
 print procesados[0]
 print str(len(procesados) - 1) + '-\n-------'
