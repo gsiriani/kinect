@@ -5,6 +5,7 @@ import numpy as np
 from datetime import datetime 
 from HandPosition import Position
 from HandPosition import Point3D
+from PosicionProcesada import PosicionProcesada
 
 POSITIONS_FILE = '/home/fer/kinect/salidas/jointsTrack_0'
 
@@ -25,6 +26,27 @@ def convertir_homogenea_a_euclidea(v):
 	z = v.z
 	w = v.w
 	return np.array([x/w, y/w, z/w])
+
+
+# Obtener Roll a partir de Quaternion (rotacion eje x)
+def quaternion_a_roll(w,x,y,z):
+	t0 = 2.0 * (w * x + y * z)
+	t1 = 1.0 - 2.0 * (x * x + y * y)
+	return math.atan2(t0, t1)
+
+# Obtener Pitch a partir de Quaternion (rotacion eje y)
+def quaternion_a_pitch(w,x,y,z):
+	t = 2.0 * (w * y - z * x)
+	t = 1.0 if t > 1.0 else t
+	t = -1.0 if t < -1.0 else t
+	return math.asin(t)
+
+# Obtener Yaw a partir de Quaternion (rotacion eje z)
+def quaternion_a_yaw(w,x,y,z):
+	t0 = 2.0 * (w * z + x * y)
+	t1 = 1.0 - 2.0 * (y * y + z * z)
+	return math.atan2(t0, t1)
+	
 
 # LECTURA
 # -------
@@ -70,9 +92,23 @@ for posicion in posiciones_seleccionadas:
 	velocidad = velocidad if not math.isnan(velocidad) else 0
 	posicion_anterior = posicion
 
-	print 'Distancia Pulgar-Indice: ' + str(dist_ind_pulg)
-	print 'Altura mano: ' + str(altura)
-	print 'Velocidad: ' + str(velocidad)
+	# Rotaciones
+	w = posicion.p_palmPosQuat.w
+	x = posicion.p_palmPosQuat.x
+	y = posicion.p_palmPosQuat.y
+	z = posicion.p_palmPosQuat.z
+	roll = quaternion_a_roll(w,x,y,z)
+	pitch = quaternion_a_pitch(w,x,y,z)
+	yaw = quaternion_a_yaw(w,x,y,z)
+	
+	procesados.append(PosicionProcesada(dist_ind_pulg=dist_ind_pulg, altura=altura, velocidad=velocidad, roll=roll, pitch=pitch, yaw=yaw))
+	
+print 'Cantidad de posiciones seleccionadas: ' + str(len(procesados))
+print '0-\n-------'
+print procesados[0]
+print str(len(procesados) - 1) + '-\n-------'
+print procesados[-1]
+
 
 	
 
