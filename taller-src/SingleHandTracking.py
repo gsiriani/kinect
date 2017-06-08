@@ -258,11 +258,26 @@ if __name__ == '__main__':
 
         key = cv.waitKey(delay[paused])
         
-        # Press 's' to start/stop tracking.
-        if key & 255 == ord('s'):
+        # Press 'm' to start/stop tracking - intencion competitivo.
+        if key & 255 == ord('m'):
             if not tracking:
                 # Comienza modo captura. Abre el archvio para loguear las posiciones
                 jsonFile = open(os.environ[DIR_SALIDAS_VAR] + "/" + FILE_PREFIX + str(secuenciaArchivo), "w")
+                jsonFile.write('COMPETITIVA\n')
+            else:
+                # Finaliza el modo captura. Cierra el archivo e incrementa la secuencia
+                jsonFile.close()           
+                secuenciaArchivo = secuenciaArchivo + 1
+
+            tracking = not tracking
+            currentHandPose = defaultInitPos
+            
+        # Press 'l' to start/stop tracking - intencion colaborativa
+        if key & 255 == ord('l'):
+            if not tracking:
+                # Comienza modo captura. Abre el archvio para loguear las posiciones
+                jsonFile = open(os.environ[DIR_SALIDAS_VAR] + "/" + FILE_PREFIX + str(secuenciaArchivo), "w")
+                jsonFile.write('COLABORATIVA\n')
             else:
                 # Finaliza el modo captura. Cierra el archivo e incrementa la secuencia
                 jsonFile.close()           

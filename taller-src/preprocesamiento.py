@@ -55,6 +55,7 @@ def preprocesar_archivo(archivo):
 	# LECTURA
 	# -------
 	# Abro archivo a procesar y almaceno las posiciones de la mano en un vector
+	intencion = archivo.readline().strip()
 	posiciones = []
 	for line in archivo:
 		d = json.loads(line)
@@ -149,7 +150,11 @@ def preprocesar_archivo(archivo):
 	
 		procesados.append(PosicionProcesada(dist_ind_pulg=dist_ind_pulg, altura=altura, velocidad=velocidad, roll=roll, pitch=pitch, yaw=yaw))
 	
-	return Caso(procesados, Intencion.Competitiva)
+	if intencion == 'COMPETITIVA':
+		intencion_aux = Intencion.Competitiva
+	else:
+		intencion_aux = Intencion.Colaborativa
+	return Caso(procesados, intencion_aux)
 
 
 	
