@@ -63,10 +63,10 @@ FILE_PREFIX = "jointsTrack_"
 def guardarPosition(clbDepth, ht, currentHandPose, jsonFile):
 
     # get camera calibration
-    frustum = clbDepth.camera
-    proj = frustum.Graphics_getProjectionTransform()
-    view = frustum.Graphics_getViewTransform()
-    viewport = frustum.Graphics_getViewportTransform(640, 480)
+#    frustum = clbDepth.camera
+#    proj = frustum.Graphics_getProjectionTransform()
+#    view = frustum.Graphics_getViewTransform()
+#    viewport = frustum.Graphics_getViewportTransform(640, 480)
 
     # break down 27-D solution to assembly of 3D transforms
     decoding = ht.decoder.quickDecode(currentHandPose)
@@ -162,7 +162,26 @@ if __name__ == '__main__':
     
     # Initialization for the hand pose of the first frame is specified.
     # If track is lost, resetting will revert track to this pose.
-    defaultInitPos = Core.ParamVector([ 0, 80, 900, 0, 0, 1, 0, 1.20946707135219810e-001, 1.57187812868051640e+000, 9.58033504364020840e-003, -1.78593063562731860e-001, 7.89636216585289100e-002, 2.67967456875403400e+000, 1.88385552327860720e-001, 2.20049375319072360e-002, -4.09740579183203310e-002, 1.52145111735213370e+000, 1.48366400350912500e-001, 2.85607073734409630e-002, -4.53781680931323280e-003, 1.52743247624671910e+000, 1.01751907812505270e-001, 1.08706683246161150e-001, 8.10845240231484330e-003, 1.49009228214971090e+000, 4.64716068193632560e-002, -1.44370358851376110e-001])
+    
+    # Posicion 1: palma derecha, hacia arriba
+    qx = 0
+    qy = 0
+    qz = 1
+    qw = 0
+    
+    # Posicion 2: reverso derecha, hacia arriba
+#    qx = 1
+#    qy = 0
+#    qz = 0
+#    qw = 0
+    
+    # Posicion 3: reverso derecha, hacia derecha
+#    qx = 1
+#    qy = 1
+#    qz = 0
+#    qw = 0    
+    
+    defaultInitPos = Core.ParamVector([ 0, 80, 900, qx, qy, qz, qw, 1.20946707135219810e-001, 1.57187812868051640e+000, 9.58033504364020840e-003, -1.78593063562731860e-001, 7.89636216585289100e-002, 2.67967456875403400e+000, 1.88385552327860720e-001, 2.20049375319072360e-002, -4.09740579183203310e-002, 1.52145111735213370e+000, 1.48366400350912500e-001, 2.85607073734409630e-002, -4.53781680931323280e-003, 1.52743247624671910e+000, 1.01751907812505270e-001, 1.08706683246161150e-001, 8.10845240231484330e-003, 1.49009228214971090e+000, 4.64716068193632560e-002, -1.44370358851376110e-001])
     
     # The 3D hand pose, as is tracked in the tracking loop.
     currentHandPose = defaultInitPos
@@ -173,6 +192,7 @@ if __name__ == '__main__':
     frame = 0
     count=0
     tracking = len(oniPath) > 0
+    writing = False
     actualFPS = 0.0
 
     # Inicia la secuencia para grabar archivo con posiciones
@@ -241,8 +261,9 @@ if __name__ == '__main__':
             # hand tracking with the specified decoder.
             score, currentHandPose = ht.step6_track(currentHandPose)
 
-            # Persiste la posicion actual            
-            guardarPosition(c, ht, currentHandPose, jsonFile)
+            if writing:
+                # Persiste la posicion actual            
+                guardarPosition(c, ht, currentHandPose, jsonFile)
 
             t = clock() - t           
             fps = 1.0 / t
@@ -258,9 +279,18 @@ if __name__ == '__main__':
 
         key = cv.waitKey(delay[paused])
         
+        # Press 's' to start/stop tracking - sin grabar
+        if key & 255 == ord('s'):
+            tracking = not tracking
+            currentHandPose = defaultInitPos            
+            if writing:
+            	jsonFile.close()
+            	writing = False
+            
+        
         # Press 'm' to start/stop tracking - intencion competitivo.
-        if key & 255 == ord('m'):
-            if not tracking:
+        if key & 255 == ord('m') and tracking:
+            if not writing:
                 # Comienza modo captura. Abre el archvio para loguear las posiciones
                 jsonFile = open(os.environ[DIR_SALIDAS_VAR] + "/" + FILE_PREFIX + str(secuenciaArchivo), "w")
                 jsonFile.write('COMPETITIVA\n')
@@ -268,13 +298,14 @@ if __name__ == '__main__':
                 # Finaliza el modo captura. Cierra el archivo e incrementa la secuencia
                 jsonFile.close()           
                 secuenciaArchivo = secuenciaArchivo + 1
+                tracking = False
 
-            tracking = not tracking
+            writing = not writing
             currentHandPose = defaultInitPos
             
         # Press 'l' to start/stop tracking - intencion colaborativa
-        if key & 255 == ord('l'):
-            if not tracking:
+        if key & 255 == ord('l') and tracking:
+            if not writing:
                 # Comienza modo captura. Abre el archvio para loguear las posiciones
                 jsonFile = open(os.environ[DIR_SALIDAS_VAR] + "/" + FILE_PREFIX + str(secuenciaArchivo), "w")
                 jsonFile.write('COLABORATIVA\n')
@@ -282,8 +313,9 @@ if __name__ == '__main__':
                 # Finaliza el modo captura. Cierra el archivo e incrementa la secuencia
                 jsonFile.close()           
                 secuenciaArchivo = secuenciaArchivo + 1
+                tracking = False
 
-            tracking = not tracking
+            writing = not writing
             currentHandPose = defaultInitPos
             
         # Press 'q' to quit.
