@@ -1,0 +1,21 @@
+Notas instalacion paquetes para aprendizaje
+==============================================
+
+
+Scikit-learn y Pandas usando Conda:
+--------------
+
+Seguir las instrucciones en el siguiente link para instalar MiniConda:
+https://conda.io/docs/install/quick.html#linux-miniconda-install
+
+Instalar SCikit-learn y todas sus dependencias usando conda:
+conda install scikit-learn
+
+Instalar pandas usando conda:
+conda install pandas
+
+instalar pydotplus para generar las graficas del arbol:
+pip install pydotplus
+
+
+

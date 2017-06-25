@@ -110,7 +110,7 @@ def preprocesar_archivo(archivo):
 		diferencia = max([dif_X, dif_Y, dif_Z])
 	 
 	posicion_inicial = posiciones[ind_posicion_inicial]
-	posiciones = posiciones[ind_posicion_inicial+1:ind_posicion_final]
+	#posiciones = posiciones[ind_posicion_inicial+1:ind_posicion_final]
 
 	#posicion_inicial = posiciones[0]
 	#posiciones=posiciones[1:]

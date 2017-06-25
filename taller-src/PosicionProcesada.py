@@ -49,8 +49,8 @@ class PosicionProcesada():
 		
 		
 class Intencion(Enum):
-	Competitiva = 1
-	Colaborativa = 2
+	Colaborativa = 1
+	Competitiva = 2
 
 class Caso():
 	'''
@@ -80,6 +80,45 @@ class Caso():
 		dicc = {'posiciones' : lista, 'intencion' : self.intencion.name}
 		return dicc
 	'''	
+	
+	def toTrainJson(self):
+		i = 0
+		dic = {'intencion': self.intencion.name}
+		for pos in self.posiciones:
+			dic['dist_ind_pulg_pos' + str(i)] = pos.dist_ind_pulg
+			dic['altura_pos' + str(i)] = pos.altura
+			dic['velocidad_pos' + str(i)] = pos.velocidad
+			dic['roll_pos' + str(i)] = pos.roll
+			dic['pitch_pos' + str(i)] = pos.pitch
+			dic['yaw_pos' + str(i)] = pos.yaw
+			i += 1
+		return json.dumps(dic, sort_keys=True)
+			
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		
 		
