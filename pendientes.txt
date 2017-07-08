@@ -1,0 +1,4 @@
+Generar archivos con posiciones graficadas de la mano (Rodolfo) con distintos colores para identificar puntos claves. Un archivo por cada una de las posiciones procesadas.
+Preprocesamiento e hiperparametros
+Menu comandos captura
+Smoothing

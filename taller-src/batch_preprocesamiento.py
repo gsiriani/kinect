@@ -1,7 +1,7 @@
 import os
 import preprocesamiento as pp
 
-path_entrada = '/home/fer/kinect/Salidas-8Junio/'
+path_entrada = '/home/fer/kinect/salidas/'
 path_salida = '/home/fer/kinect/casos/casos.txt'
 
 jsonFile = open(path_salida, "w")

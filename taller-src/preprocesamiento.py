@@ -7,6 +7,7 @@ from datetime import datetime
 from HandPosition import Position
 from HandPosition import Point3D
 from PosicionProcesada import PosicionProcesada, Intencion, Caso
+from graficarPosiciones import graficar
 
 POSITIONS_FILE = path_proyecto + 'salidas/jointsTrack_2'
 
@@ -71,7 +72,7 @@ def preprocesar_archivo(archivo):
 
 	# WARNING: Se asume que cada archivo tiene al menos 3 posiciones. 
 
-	delta = 1 # distancia minima para considerar que la mano se mueve
+	delta = 0.01 # distancia minima para considerar que la mano se mueve
 
 	# Determino posicion inicial
 	ind_posicion_inicial = 0
@@ -110,17 +111,23 @@ def preprocesar_archivo(archivo):
 		diferencia = max([dif_X, dif_Y, dif_Z])
 	 
 	posicion_inicial = posiciones[ind_posicion_inicial]
-	#posiciones = posiciones[ind_posicion_inicial+1:ind_posicion_final]
+	posiciones = posiciones[ind_posicion_inicial+1:ind_posicion_final]
 
-	#posicion_inicial = posiciones[0]
-	#posiciones=posiciones[1:]
+	posicion_inicial = posiciones[0]
+	posiciones=posiciones[1:]
 
 	# Obtengo cantidad de posiciones y conservo 10 posiciones distribuidas uniformemente
 	total_posiciones = len(posiciones)
-	# print 'Cantidad de posiciones seleccionadas: ' + str(total_posiciones)
+	print 'Cantidad de posiciones seleccionadas: ' + str(total_posiciones)
 	posiciones_seleccionadas = []
 	for i in range(10):
 		posiciones_seleccionadas.append(posiciones[total_posiciones*i/10])
+		
+	# GRAFICO POSICIONES SELECCIONADAS
+	# --------------------------------
+	
+	for posicion in posiciones_seleccionadas:
+		graficar(posicion)
 
 	# EXTRACCION
 	# ----------
