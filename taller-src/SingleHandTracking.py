@@ -164,16 +164,16 @@ if __name__ == '__main__':
     # If track is lost, resetting will revert track to this pose.
     
     # Posicion 1: palma derecha, hacia arriba
-    qx = 0
-    qy = 0
-    qz = 1
-    qw = 0
+#    qx = 0
+#    qy = 0
+#    qz = 1
+#    qw = 0
     
     # Posicion 2: reverso derecha, hacia arriba
-#    qx = 1
-#    qy = 0
-#    qz = 0
-#    qw = 0
+    qx = 1
+    qy = 0
+    qz = 0
+    qw = 0
     
     # Posicion 3: reverso derecha, hacia derecha
 #    qx = 1
@@ -199,6 +199,11 @@ if __name__ == '__main__':
     secuenciaArchivo = 0
 
     print "Entering main Loop."
+    print "MENU\n----"
+    print "*'s'->Iniciar reconocimiento de la mano / Detener reconocimiento (sin grabar archivo)"
+    print "*'m'->Iniciar captura intencion CoMpetitiva / Finalizar y grabar captura"
+    print "*'l'->Iniciar captura intencion CoLaborativa / Finalizar y grabar captura"
+    print "*'q'->Cerrar la aplicacion"
     while True:
         loopStart = time.time()*1000;
         try:

@@ -123,12 +123,6 @@ def preprocesar_archivo(archivo):
 	for i in range(10):
 		posiciones_seleccionadas.append(posiciones[total_posiciones*i/10])
 		
-	# GRAFICO POSICIONES SELECCIONADAS
-	# --------------------------------
-	
-	for posicion in posiciones_seleccionadas:
-		graficar(posicion)
-
 	# EXTRACCION
 	# ----------
 
