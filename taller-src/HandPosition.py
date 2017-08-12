@@ -53,13 +53,14 @@ BASE_MAYOR_POS = 10
 # Clase que modela la posicion de la mano en un instante dado
 class Position():
 
-    def __init__(self, currentHandPose, centros, fechaHora):
+    def __init__(self, currentHandPose, centros, fechaHora, id_posicion):
         """
         currentHandPose: Array conteniendo los 27 parametros del modelo
                 centros: Array con los centros de las 22 esferas utilizadas para dibujar la mano
                          Cada centro es un punto con coordenadas homogeneas 
                          representado como una lista de 4 coordenadas: [x, y, z, w]
               fechaHora: Fecha hora de creacion del objeto
+              id_posicion: Numero que identifica la posicion dentro de una captura 
         """
 
         # Array con los 27 parametros de la posicion del modelo
@@ -93,6 +94,9 @@ class Position():
 
         # Fecha hora de creacion del objeto
         self.fechaHora = fechaHora
+
+        # Numero que identifica la posicion dentro de una captura 
+        self.id_posicion = id_posicion
 
     def __str__(self):
         return str(self.__dict__)

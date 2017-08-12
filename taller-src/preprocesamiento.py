@@ -7,9 +7,7 @@ from datetime import datetime
 from HandPosition import Position
 from HandPosition import Point3D
 from PosicionProcesada import PosicionProcesada, Intencion, Caso
-from graficarPosiciones import graficar
 
-POSITIONS_FILE = path_proyecto + 'salidas/jointsTrack_2'
 
 
 # FUNCIONES AUXILIARES
@@ -60,7 +58,7 @@ def preprocesar_archivo(archivo):
 	posiciones = []
 	for line in archivo:
 		d = json.loads(line)
-		position = Position(d["currentHandPose"], d["centros"], d["fechaHora"])
+		position = Position(d["currentHandPose"], d["centros"], d["fechaHora"], d["id_posicion"])
 		posiciones.append(position)
 	archivo.close()
 

@@ -60,7 +60,7 @@ FILE_PREFIX = "jointsTrack_"
 #  currentHandPose: Estructura con los 27 parametros calculados
 #                   para la posicion actual
 #       jsonFile: Arhivo donde se va a persitir la posicion
-def guardarPosition(clbDepth, ht, currentHandPose, jsonFile):
+def guardarPosition(clbDepth, ht, currentHandPose, jsonFile, id_posicion):
 
     # get camera calibration
 #    frustum = clbDepth.camera
@@ -83,7 +83,7 @@ def guardarPosition(clbDepth, ht, currentHandPose, jsonFile):
     centros = [[float(child.text) for child in ET.fromstring(str(d.matrices[i]*zero))] for i in range(0,22)]
 
     # Crea la posicion correspondiente a la captura
-    position = Position(arrayCurrentHandPose, centros, fechaActual()) 
+    position = Position(arrayCurrentHandPose, centros, fechaActual(), id_posicion) 
     jsonFile.write(position.toJson()) 
     jsonFile.write('\n')
     jsonFile.flush()
@@ -164,16 +164,16 @@ if __name__ == '__main__':
     # If track is lost, resetting will revert track to this pose.
     
     # Posicion 1: palma derecha, hacia arriba
-#    qx = 0
-#    qy = 0
-#    qz = 1
-#    qw = 0
+   qx = 0
+   qy = 0
+   qz = 1
+   qw = 0
     
-    # Posicion 2: reverso derecha, hacia arriba
-    qx = 1
-    qy = 0
-    qz = 0
-    qw = 0
+    # # Posicion 2: reverso derecha, hacia arriba
+    # qx = 1
+    # qy = 0
+    # qz = 0
+    # qw = 0
     
     # Posicion 3: reverso derecha, hacia derecha
 #    qx = 1
@@ -194,6 +194,7 @@ if __name__ == '__main__':
     tracking = len(oniPath) > 0
     writing = False
     actualFPS = 0.0
+    id_posicion_actual = 1
 
     # Inicia la secuencia para grabar archivo con posiciones
     secuenciaArchivo = 0
@@ -268,7 +269,8 @@ if __name__ == '__main__':
 
             if writing:
                 # Persiste la posicion actual            
-                guardarPosition(c, ht, currentHandPose, jsonFile)
+                guardarPosition(c, ht, currentHandPose, jsonFile, id_posicion_actual)
+                id_posicion_actual += 1
 
             t = clock() - t           
             fps = 1.0 / t
