@@ -1,7 +1,7 @@
 import os
-import preprocesamiento as pp
+import preprocesamientoNone as pp
 
-path_entrada = '/home/fer/kinect/salidas/'
+path_entrada = '/home/fer/kinect/salidas-test-none/'
 path_salida = '/home/fer/kinect/casos/casos.txt'
 
 jsonFile = open(path_salida, "w")
