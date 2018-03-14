@@ -9,7 +9,11 @@ from sklearn.model_selection import train_test_split, cross_val_score
 import pydotplus  
 
 
+# Seteo de variables
+# ============================
 archivo_datos = '/home/fer/kinect/casos/casos.txt'
+ruta_arbol_salida = 'arbol.dot'
+
 
 # PREPROCESAMIENTO DE LOS DATOS
 # =============================
@@ -94,7 +98,7 @@ scores_nb = cross_val_score(nb, X, y, cv=5, scoring='accuracy')
 print("\nAccuracy validacion cruzada de Bayes: %0.2f (+/- %0.2f)" % (scores_nb.mean(), scores_nb.std() * 2))
 
                       
-dot_data = tree.export_graphviz(dt, out_file='arbol.dot', 
+dot_data = tree.export_graphviz(dt, out_file=ruta_arbol_salida, 
                          feature_names=df.columns,  
                          class_names=['Colaborativa', 'Competitiva'],  
                          filled=True, rounded=True,  
